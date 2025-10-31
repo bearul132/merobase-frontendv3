@@ -1,11 +1,25 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import meroBanner from "../assets/mero.png";
+import { useNavigate } from "react-router-dom";
 
 export default function InfoCard({ title, sample, color = "from-blue-500 to-blue-400" }) {
   const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate();
 
   const toggleExpand = () => setExpanded((prev) => !prev);
+
+  // Format the registered date only
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "N/A";
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   return (
     <motion.div
@@ -41,14 +55,13 @@ export default function InfoCard({ title, sample, color = "from-blue-500 to-blue
 
       {/* Front content */}
       <motion.div layout className="space-y-2">
-        {!expanded && (
-          <h4 className="text-lg font-semibold tracking-wide">{title}</h4>
-        )}
+        {!expanded && <h4 className="text-lg font-semibold tracking-wide">{title}</h4>}
+
         <p className="text-sm">
           <span className="font-semibold">Species:</span> {sample?.species || "N/A"}
         </p>
         <p className="text-sm">
-          <span className="font-semibold">Date:</span> {sample?.date || "N/A"}
+          <span className="font-semibold">Registered Date:</span> {formatDate(sample?.collectionDate)}
         </p>
 
         {/* Expanded content */}
@@ -108,6 +121,19 @@ export default function InfoCard({ title, sample, color = "from-blue-500 to-blue
                   className="mt-2 w-full h-36 object-cover rounded-lg border border-white/20"
                 />
               )}
+
+              {/* View Details Button */}
+              <div className="flex justify-center mt-3">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/sample/${sample.sampleID}`);
+                  }}
+                  className="px-6 py-2 bg-[#003366] text-white font-semibold rounded-lg shadow-md hover:bg-[#004C99] transition"
+                >
+                  View Details
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

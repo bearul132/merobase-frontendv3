@@ -9,6 +9,18 @@ const SampleDetails = ({ samples }) => {
 
   const sample = samples.find((s) => s.sampleID === id);
 
+  // Format the registered date only
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "N/A";
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   if (!sample) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 text-gray-700">
@@ -24,10 +36,8 @@ const SampleDetails = ({ samples }) => {
   }
 
   const markerIcon = new L.Icon({
-    iconUrl:
-      "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-    shadowUrl:
-      "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+    iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
     iconSize: [25, 41],
     iconAnchor: [12, 41],
   });
@@ -51,13 +61,14 @@ const SampleDetails = ({ samples }) => {
         <div className="p-6 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <h2 className="text-2xl font-semibold text-gray-800">
-              {sample.sampleName}
+              {sample.sampleName || "Unnamed Sample"}
             </h2>
             <span className="text-gray-500 text-sm">
-              ID: {sample.sampleID}
+              ID: {sample.sampleID || "N/A"}
             </span>
           </div>
 
+          {/* Photos Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {sample.samplePhoto && (
               <div>
@@ -91,20 +102,21 @@ const SampleDetails = ({ samples }) => {
             )}
           </div>
 
+          {/* Info Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <p><span className="font-semibold">Species:</span> {sample.species}</p>
-              <p><span className="font-semibold">Genus:</span> {sample.genus}</p>
-              <p><span className="font-semibold">Family:</span> {sample.family}</p>
-              <p><span className="font-semibold">Kingdom:</span> {sample.kingdom}</p>
-              <p><span className="font-semibold">Project:</span> {sample.project}</p>
+              <p><span className="font-semibold">Species:</span> {sample.species || "N/A"}</p>
+              <p><span className="font-semibold">Genus:</span> {sample.genus || "N/A"}</p>
+              <p><span className="font-semibold">Family:</span> {sample.family || "N/A"}</p>
+              <p><span className="font-semibold">Kingdom:</span> {sample.kingdom || "N/A"}</p>
+              <p><span className="font-semibold">Project Type:</span> {sample.projectType || "N/A"}</p>
             </div>
             <div>
-              <p><span className="font-semibold">Collected By:</span> {sample.collectorName}</p>
-              <p><span className="font-semibold">Date:</span> {sample.collectionDate}</p>
+              <p><span className="font-semibold">Collected By:</span> {sample.collectorName || "N/A"}</p>
+              <p><span className="font-semibold">Registered Date:</span> {formatDate(sample.dateCollected)}</p>
               <p><span className="font-semibold">Location:</span></p>
               <p className="ml-4 text-sm text-gray-600">
-                Lat: {sample.latitude} <br /> Lng: {sample.longitude}
+                Lat: {sample.latitude || "N/A"} <br /> Lng: {sample.longitude || "N/A"}
               </p>
             </div>
           </div>
